@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'picture.g.dart';
@@ -7,9 +5,9 @@ part 'picture.g.dart';
 @JsonSerializable()
 class Picture {
   final int id;
-  final String pageUrl;
-  final String typel;
-  final List<String> tags;
+  final String? pageUrl;
+  final String? typel;
+  final List<String>? tags;
   final String previewURL;
   final int previewWidth;
   final int previewHeight;
@@ -19,7 +17,7 @@ class Picture {
   final String largeImageURL;
   final int imageWidth;
   final int imageHeight;
-  final String imageSize;
+  final int imageSize;
   final int views;
   final int downloads;
   final int collections;
@@ -54,8 +52,9 @@ class Picture {
       required this.user,
       required this.userImageURL});
 
-  factory Picture.fromJson(Map<String, dynamic> json) =>
-      _$PictureFromJson(json);
+  factory Picture.fromJson(Map<String, dynamic> json) {
+    return _$PictureFromJson(json);
+  }
 
   Map<String, dynamic> toJson() => _$PictureToJson(this);
 }

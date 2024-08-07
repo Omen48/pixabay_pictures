@@ -8,9 +8,9 @@ part of 'picture.dart';
 
 Picture _$PictureFromJson(Map<String, dynamic> json) => Picture(
       id: (json['id'] as num).toInt(),
-      pageUrl: json['pageUrl'] as String,
-      typel: json['typel'] as String,
-      tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
+      pageUrl: json['pageUrl'] as String?,
+      typel: json['typel'] as String?,
+      tags: (json['tags'] as String).split(',').map((e) => e.trim()).toList(),
       previewURL: json['previewURL'] as String,
       previewWidth: (json['previewWidth'] as num).toInt(),
       previewHeight: (json['previewHeight'] as num).toInt(),
@@ -20,7 +20,7 @@ Picture _$PictureFromJson(Map<String, dynamic> json) => Picture(
       largeImageURL: json['largeImageURL'] as String,
       imageWidth: (json['imageWidth'] as num).toInt(),
       imageHeight: (json['imageHeight'] as num).toInt(),
-      imageSize: json['imageSize'] as String,
+      imageSize: json['imageSize'] as int,
       views: (json['views'] as num).toInt(),
       downloads: (json['downloads'] as num).toInt(),
       collections: (json['collections'] as num).toInt(),
@@ -34,7 +34,7 @@ Picture _$PictureFromJson(Map<String, dynamic> json) => Picture(
 Map<String, dynamic> _$PictureToJson(Picture instance) => <String, dynamic>{
       'id': instance.id,
       'pageUrl': instance.pageUrl,
-      'typel': instance.typel,
+      'tags': instance.tags?.join(', '),
       'tags': instance.tags,
       'previewURL': instance.previewURL,
       'previewWidth': instance.previewWidth,
