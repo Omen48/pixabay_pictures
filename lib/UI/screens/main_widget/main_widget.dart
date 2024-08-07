@@ -66,8 +66,36 @@ class _MainWidgetState extends State<MainWidget> {
   }
 }
 
-class PicturesView extends StatelessWidget {
+class PicturesView extends StatefulWidget {
   const PicturesView({super.key});
+
+  @override
+  _PicturesViewState createState() => _PicturesViewState();
+}
+
+class _PicturesViewState extends State<PicturesView> {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      final model = Provider.of<MainWidgetModel>(context, listen: false);
+      model.loadMore();
+    }
+  }
 
   int _calcColumns(double width) => (width / 200).floor().clamp(2, 6);
 
@@ -77,7 +105,10 @@ class PicturesView extends StatelessWidget {
       builder: (context, model, child) {
         switch (model.state) {
           case ViewState.loading:
-            return const Center(child: CircularProgressIndicator());
+            if (model.pictures.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            break;
           case ViewState.noResults:
             return const Center(
                 child: Text('По вашему запросу ничего не найдено :('));
@@ -88,36 +119,27 @@ class PicturesView extends StatelessWidget {
                 child:
                     Text(model.errorMessage ?? 'An unexpected error occurred'));
           case ViewState.loaded:
-          case ViewState.idle:
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                int columns = _calcColumns(constraints.maxWidth);
-                return NotificationListener<ScrollNotification>(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels ==
-                        scrollInfo.metrics.maxScrollExtent) {
-                      model.loadMore();
-                      return true;
-                    }
-                    return false;
-                  },
-                  child: GridView.builder(
-                    itemCount: model.pictures.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: columns,
-                      childAspectRatio: 0.85,
-                    ),
-                    itemBuilder: (BuildContext context, index) => PictureWidget(
-                      imageAsset: model.pictures[index].webformatURL,
-                      views: model.pictures[index].views,
-                      likes: model.pictures[index].likes,
-                      largeImageAsset: model.pictures[index].largeImageURL,
-                    ),
-                  ),
-                );
-              },
-            );
+            break;
         }
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            int columns = _calcColumns(constraints.maxWidth);
+            return GridView.builder(
+              controller: _scrollController,
+              itemCount: model.pictures.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: columns,
+                childAspectRatio: 0.85,
+              ),
+              itemBuilder: (BuildContext context, index) => PictureWidget(
+                imageAsset: model.pictures[index].webformatURL,
+                views: model.pictures[index].views,
+                likes: model.pictures[index].likes,
+                largeImageAsset: model.pictures[index].largeImageURL,
+              ),
+            );
+          },
+        );
       },
     );
   }

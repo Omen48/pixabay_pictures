@@ -2,16 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:pixabay_pictures/domain/api_client.dart';
 import 'package:pixabay_pictures/domain/entity/picture.dart';
 
-import 'package:flutter/material.dart';
-import 'package:pixabay_pictures/domain/api_client.dart';
-import 'package:pixabay_pictures/domain/entity/picture.dart';
-
-enum ViewState { idle, loading, loaded, noResults, networkError, otherError }
+enum ViewState { loading, loaded, noResults, networkError, otherError }
 
 class MainWidgetModel with ChangeNotifier {
   final ApiClient _apiClient = ApiClient();
   List<Picture> _pictures = [];
-  ViewState _state = ViewState.idle;
+  ViewState _state = ViewState.loaded;
   int _currentPage = 1;
   int _totalPages = 1;
   String _currentKeyword = '';
@@ -71,4 +67,3 @@ class MainWidgetModel with ChangeNotifier {
     await _loadPictures(_currentKeyword);
   }
 }
-//

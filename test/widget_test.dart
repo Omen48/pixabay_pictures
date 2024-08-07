@@ -1,27 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
+import 'package:pixabay_pictures/main.dart' as app;
 import 'package:pixabay_pictures/UI/screens/full_screen_image.dart';
 import 'package:pixabay_pictures/UI/screens/picture_widget.dart';
-import 'package:pixabay_pictures/my_app.dart';
-import 'package:pixabay_pictures/UI/screens/main_widget/main_widget_model.dart';
-import 'package:provider/provider.dart';
 
 void main() {
-  Widget createTestableWidget() {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<MainWidgetModel>(
-          create: (_) => MainWidgetModel(),
-        ),
-      ],
-      child: const MyApp(),
-    );
-  }
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('Приложение Pixabay Pictures', () {
     testWidgets('Начальная загрузка показывает заголовок приложения',
         (WidgetTester tester) async {
-      await tester.pumpWidget(createTestableWidget());
+      app.main();
       await tester.pumpAndSettle();
 
       expect(find.text('Pixabay pictures'), findsOneWidget);
@@ -29,16 +19,19 @@ void main() {
 
     testWidgets('Поле поиска присутствует, а GridView изначально отсутствует',
         (WidgetTester tester) async {
-      await tester.pumpWidget(createTestableWidget());
+      app.main();
       await tester.pumpAndSettle();
 
       expect(find.byType(TextField), findsOneWidget);
+      // Ожидание, чтобы убедиться, что GridView действительно отсутствует в начале
+      await tester.pump(const Duration(seconds: 2));
       expect(find.byType(GridView), findsNothing);
     });
 
     testWidgets('Выполнение поиска и отображение результатов',
         (WidgetTester tester) async {
-      await tester.pumpWidget(createTestableWidget());
+      app.main();
+      await tester.pumpAndSettle();
 
       await tester.enterText(find.byType(TextField), 'nature');
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
@@ -50,7 +43,8 @@ void main() {
 
     testWidgets('Загрузка дополнительных изображений при прокрутке',
         (WidgetTester tester) async {
-      await tester.pumpWidget(createTestableWidget());
+      app.main();
+      await tester.pumpAndSettle();
 
       await tester.enterText(find.byType(TextField), 'nature');
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
@@ -67,7 +61,8 @@ void main() {
 
     testWidgets('Открытие изображения на весь экран и его закрытие',
         (WidgetTester tester) async {
-      await tester.pumpWidget(createTestableWidget());
+      app.main();
+      await tester.pumpAndSettle();
 
       await tester.enterText(find.byType(TextField), 'nature');
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
