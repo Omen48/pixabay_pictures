@@ -67,8 +67,8 @@ class PictureWidget extends StatelessWidget {
                   overflow: TextOverflow.ellipsis, // Это обеспечит сокращение текста, если он не вмещается
                 ),
               ),
+              const Spacer(),
               const Icon(Icons.remove_red_eye, size: 16),
-              Spacer(),
               Flexible(
                 child: Text(
                   '$views',
