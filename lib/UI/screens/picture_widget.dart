@@ -35,18 +35,20 @@ class PictureWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        GestureDetector(
-          onTap: () => _showFullScreenImage(context),
-          child: AspectRatio(
-            aspectRatio: 1,
-            child: Card(
-              borderOnForeground: true,
-              child: ClipRect(
-                child: Hero(
-                  tag: imageAsset,
-                  child: Image.network(
-                    imageAsset,
-                    fit: BoxFit.cover,
+        Expanded(
+          child: GestureDetector(
+            onTap: () => _showFullScreenImage(context),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: Card(
+                borderOnForeground: true,
+                child: ClipRect(
+                  child: Hero(
+                    tag: imageAsset,
+                    child: Image.network(
+                      imageAsset,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
@@ -58,13 +60,26 @@ class PictureWidget extends StatelessWidget {
           child: Row(
             children: [
               const Icon(Icons.favorite, size: 16),
-              Text('$likes'),
-              const Spacer(),
+              Flexible(
+                child: Text(
+                  '$likes',
+                  style: const TextStyle(fontSize: 16),
+                  overflow: TextOverflow.ellipsis, // Это обеспечит сокращение текста, если он не вмещается
+                ),
+              ),
               const Icon(Icons.remove_red_eye, size: 16),
-              Text('$views'),
+              Spacer(),
+              Flexible(
+                child: Text(
+                  '$views',
+                  style: const TextStyle(fontSize: 16),
+                  overflow: TextOverflow.ellipsis, // Это обеспечит сокращение текста, если он не вмещается
+                ),
+              ),
             ],
           ),
         ),
+
       ],
     );
   }

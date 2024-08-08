@@ -70,7 +70,7 @@ class PicturesView extends StatefulWidget {
   const PicturesView({super.key});
 
   @override
-  _PicturesViewState createState() => _PicturesViewState();
+  State<PicturesView> createState() => _PicturesViewState();
 }
 
 class _PicturesViewState extends State<PicturesView> {
@@ -113,11 +113,11 @@ class _PicturesViewState extends State<PicturesView> {
             return const Center(
                 child: Text('По вашему запросу ничего не найдено :('));
           case ViewState.networkError:
-            return Center(child: Text(model.errorMessage ?? 'Network error'));
+            return Center(child: Text(model.errorMessage! ));
           case ViewState.otherError:
             return Center(
                 child:
-                    Text(model.errorMessage ?? 'An unexpected error occurred'));
+                    Text(model.errorMessage!));
           case ViewState.loaded:
             break;
         }

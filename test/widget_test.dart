@@ -17,15 +17,13 @@ void main() {
       expect(find.text('Pixabay pictures'), findsOneWidget);
     });
 
-    testWidgets('Поле поиска присутствует, а GridView изначально отсутствует',
+    testWidgets('Поле поиска и GridView присутствуют ',
         (WidgetTester tester) async {
       app.main();
       await tester.pumpAndSettle();
-
       expect(find.byType(TextField), findsOneWidget);
-      // Ожидание, чтобы убедиться, что GridView действительно отсутствует в начале
-      await tester.pump(const Duration(seconds: 2));
-      expect(find.byType(GridView), findsNothing);
+      // await tester.pump(const Duration(seconds: 2));
+      expect(find.byType(GridView), findsOneWidget);
     });
 
     testWidgets('Выполнение поиска и отображение результатов',
@@ -36,7 +34,6 @@ void main() {
       await tester.enterText(find.byType(TextField), 'nature');
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
-      await tester.pumpAndSettle(const Duration(seconds: 2));
 
       expect(find.byType(GridView), findsOneWidget);
     });
@@ -49,12 +46,10 @@ void main() {
       await tester.enterText(find.byType(TextField), 'nature');
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
-      await tester.pumpAndSettle(const Duration(seconds: 2));
 
       expect(find.byType(GridView), findsOneWidget);
 
       await tester.fling(find.byType(GridView), const Offset(0, -300), 1000);
-      await tester.pumpAndSettle(const Duration(seconds: 2));
 
       expect(find.byType(GridView), findsOneWidget);
     });
@@ -67,19 +62,30 @@ void main() {
       await tester.enterText(find.byType(TextField), 'nature');
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
-      await tester.pumpAndSettle(const Duration(seconds: 2));
+      await tester.pumpAndSettle(const  Duration(milliseconds: 500));
 
       expect(find.byType(GridView), findsOneWidget);
 
       await tester.tap(find.byType(PictureWidget).first);
-      await tester.pumpAndSettle(const Duration(seconds: 2));
+      await tester.pumpAndSettle(const  Duration(milliseconds: 500));
 
       expect(find.byType(FullScreenImageOverlay), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.close));
-      await tester.pumpAndSettle(const Duration(seconds: 2));
+      await tester.pumpAndSettle(const  Duration(milliseconds: 500));
 
       expect(find.byType(FullScreenImageOverlay), findsNothing);
+    });
+    testWidgets('Отображение сообщения "ничего не найдено"', (WidgetTester tester) async {
+      app.main();
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextField), 'nonexistentquery');
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
+
+      await tester.pumpAndSettle(const Duration(seconds: 2));
+
+      expect(find.text('По вашему запросу ничего не найдено :('), findsOneWidget);
     });
   });
 }

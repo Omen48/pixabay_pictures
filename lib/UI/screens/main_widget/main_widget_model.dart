@@ -51,11 +51,11 @@ class MainWidgetModel with ChangeNotifier {
       switch (e.type) {
         case ApiClientExceptionTypes.network:
           _state = ViewState.networkError;
-          _errorMessage = "Network error occurred";
+          _errorMessage = "Ошибка сети";
           break;
         case ApiClientExceptionTypes.other:
           _state = ViewState.otherError;
-          _errorMessage = "An unexpected error occurred";
+          _errorMessage = "Что-то пошло не так, попробуйте позже";
           break;
       }
     } finally {
