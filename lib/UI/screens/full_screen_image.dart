@@ -31,6 +31,10 @@ class FullScreenImageOverlay extends StatelessWidget {
                     child: Image.network(
                       imageAsset,
                       fit: BoxFit.contain,
+                      loadingBuilder: (context, child, loadingProgress) =>
+                          loadingProgress == null
+                              ? child
+                              : const CircularProgressIndicator(),
                     ),
                   ),
                 );
