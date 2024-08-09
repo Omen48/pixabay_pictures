@@ -1,0 +1,1 @@
+ D:\\Dev\\my_flutter_projects\\test\\pixabay_pictures\\.dart_tool\\flutter_build\\211c2a27f351990e341c32ef31b74ceb\\native_assets.yaml: 
