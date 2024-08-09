@@ -4,10 +4,30 @@ import 'package:integration_test/integration_test.dart';
 import 'package:pixabay_pictures/main.dart' as app;
 import 'package:pixabay_pictures/UI/screens/full_screen_image.dart';
 import 'package:pixabay_pictures/UI/screens/picture_widget.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  setUp(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(
+        const MethodChannel('plugins.flutter.io/path_provider'),
+            (MethodCall methodCall) async {
+          return (methodCall.method == 'getTemporaryDirectory' ||
+              methodCall.method == 'getApplicationSupportDirectory')
+              ? '/mocked_path'
+              : null;
+        },
+      );
+  });
 
+  tearDown(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(
+        const MethodChannel('plugins.flutter.io/path_provider'),
+        null,
+      );
+  });
   group('Приложение Pixabay Pictures', () {
     testWidgets('Начальная загрузка показывает заголовок приложения',
         (WidgetTester tester) async {
@@ -34,7 +54,6 @@ void main() {
       await tester.enterText(find.byType(TextField), 'nature');
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
-
       expect(find.byType(GridView), findsOneWidget);
     });
 
@@ -45,7 +64,6 @@ void main() {
 
       await tester.enterText(find.byType(TextField), 'nature');
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
-
 
       expect(find.byType(GridView), findsOneWidget);
 
@@ -62,21 +80,22 @@ void main() {
       await tester.enterText(find.byType(TextField), 'nature');
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
-      await tester.pumpAndSettle(const  Duration(milliseconds: 500));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       expect(find.byType(GridView), findsOneWidget);
 
       await tester.tap(find.byType(PictureWidget).first);
-      await tester.pumpAndSettle(const  Duration(milliseconds: 500));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       expect(find.byType(FullScreenImageOverlay), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.close));
-      await tester.pumpAndSettle(const  Duration(milliseconds: 500));
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       expect(find.byType(FullScreenImageOverlay), findsNothing);
     });
-    testWidgets('Отображение сообщения "ничего не найдено"', (WidgetTester tester) async {
+    testWidgets('Отображение сообщения "ничего не найдено"',
+        (WidgetTester tester) async {
       app.main();
       await tester.pumpAndSettle();
 
@@ -85,7 +104,8 @@ void main() {
 
       await tester.pumpAndSettle(const Duration(seconds: 2));
 
-      expect(find.text('По вашему запросу ничего не найдено :('), findsOneWidget);
+      expect(
+          find.text('По вашему запросу ничего не найдено :('), findsOneWidget);
     });
   });
 }
