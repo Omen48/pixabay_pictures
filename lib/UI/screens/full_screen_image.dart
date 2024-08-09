@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class FullScreenImageOverlay extends StatelessWidget {
@@ -28,13 +29,13 @@ class FullScreenImageOverlay extends StatelessWidget {
                   scale: value,
                   child: Hero(
                     tag: tag,
-                    child: Image.network(
-                      imageAsset,
+                    child: CachedNetworkImage(
+                      imageUrl: imageAsset,
+                      placeholder: (context, url) =>
+                          CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          Icon(Icons.error),
                       fit: BoxFit.contain,
-                      loadingBuilder: (context, child, loadingProgress) =>
-                          loadingProgress == null
-                              ? child
-                              : const CircularProgressIndicator(),
                     ),
                   ),
                 );
